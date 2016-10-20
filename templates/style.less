@@ -1,0 +1,134 @@
+@background-color: #4A4A4A;
+@text-color: #222222;
+@control-color: #E2E2E2;
+@green: #8BC34A;
+@gold: #FFC107;
+@progress-bar-color: #11A092;
+@shadow-color: #818181;
+
+@font-light: "Segoe UI light";
+@font-normal: "Segoe UI";
+
+@font-size-big: 2em;
+@font-size-medium: 1.5em;
+@font-size-normal: 1.1em;
+
+
+
+
+
+body, html {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding:0;
+  font-size: @font-size-normal;
+  font-family: @font-normal;
+}
+
+/*******************/
+/* --- CONTENT --- */
+/*******************/
+
+.content {
+  background: @background-color;
+  height: 50%;
+  text-align: center;
+}
+
+.picture-box {
+  display: table-inline;
+  height: 100%;
+  background: black;
+  margin: 0 auto;
+}
+
+.progress {
+  display: table-inline;
+  margin-top: -0.75rem;
+  height: 0.75rem;
+  background: @progress-bar-color;
+}
+
+/********************/
+/* --- CONTROLS --- */
+/********************/
+
+.controls {
+  background: @control-color;
+  padding-top: 2rem;
+  height: 50%;
+}
+
+.answer-conrol {
+  height: 100%;
+  margin-top: 1rem;
+}
+
+.box {
+  background: #FAFAFA;
+  display:table;
+  width: 50%;
+  height: 125px;
+
+  margin: 0 auto 0.5rem auto;
+  border-radius: 10px;
+  overflow:hidden;
+}
+
+.box div {
+  display: table-cell;
+}
+
+.box-effects {
+  .shadow(10px);
+  .transition();
+}
+
+.box-effects:hover {
+  .shadow(10px, 5px);
+}
+
+.answer-label {
+  background: @green;
+  width:15%;
+  color: white;
+  font-size: @font-size-big*1.5;
+  font-family: @font-light;
+  text-align: center;
+  vertical-align: middle;
+  .shadow();
+  .transition();
+}
+
+.answer {
+  padding: 25px;
+  .transition();
+  &:active {
+    background-color: fadein(@gold, 10%);
+  }
+}
+
+.help {
+  background: @green;
+  color: white;
+  position: fixed;
+  width: 5rem;
+  height: 5rem;
+  right:0;
+  bottom:0;
+  font-size: @font-size-big;
+  vertical-align: middle;
+  text-align: center;
+  line-height: 2.4em;
+  .shadow(.5rem, .1rem);
+}
+
+//Functions
+.transition(@duration: .2s, @property: all, @function: ease-out) {
+  transition: @property @duration @function;
+}
+
+.shadow(@blur: 0.1rem, @spread: 0.1rem, @h-shadow: 0, @v-shadow: 0,@color: @shadow-color) {
+  box-shadow: @h-shadow @v-shadow @blur @spread @color;
+}
