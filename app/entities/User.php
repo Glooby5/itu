@@ -21,7 +21,7 @@ class User implements IIdentity
 
     /**
      * @var string
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", nullable=TRUE)
      */
     protected $password;
 
@@ -29,7 +29,7 @@ class User implements IIdentity
      * @var bool
      * @ORM\Column(type="boolean")
      */
-    protected $isAdmin;
+    protected $isAdmin = false;
 
     function getRoles()
     {

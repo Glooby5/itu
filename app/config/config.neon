@@ -13,6 +13,9 @@ session:
 
 services:
 	router: App\RouterFactory::createRouter
+	- App\Model\UserManager
+	- App\Repositories\UserRepository
+	- App\Forms\SignInFormFactory
 
 extensions:
 	# add theese four lines
