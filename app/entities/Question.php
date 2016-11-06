@@ -6,17 +6,21 @@ use Doctrine\ORM\Mapping as ORM;
 use Kdyby\Doctrine\Entities\Attributes\Identifier;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="QuestionRepository")
  */
 class Question
 {
     use Identifier;
 
+    const FIRST_ANSWER = 1;
+    const SECOND_ANSWER = 2;
+    const THIRD_ANSWER = 3;
+
     /**
      * @var string
      * @ORM\Column(type="string")
      */
-    protected $text;
+    protected $question;
 
     /**
      * @var string
@@ -40,28 +44,34 @@ class Question
      * @var string
      * @ORM\Column(type="string")
      */
-    protected $fulltext;
+    protected $fulltextAnswer;
 
     /**
      * @var int
      * @ORM\Column(type="integer")
      */
-    protected $right;
+    protected $correct;
+
+    /**
+     * @var Test
+     * @ORM\ManyToOne(targetEntity="Test")
+     */
+    protected $test;
 
     /**
      * @return string
      */
-    public function getText()
+    public function getQuestion()
     {
-        return $this->text;
+        return $this->question;
     }
 
     /**
-     * @param string $text
+     * @param string $question
      */
-    public function setText(string $text)
+    public function setQuestion(string $question)
     {
-        $this->text = $text;
+        $this->question = $question;
     }
 
     /**
@@ -115,32 +125,48 @@ class Question
     /**
      * @return string
      */
-    public function getFulltext()
+    public function getFulltextAnswer()
     {
-        return $this->fulltext;
+        return $this->fulltextAnswer;
     }
 
     /**
-     * @param string $fulltext
+     * @param string $fulltextAnswer
      */
-    public function setFulltext(string $fulltext)
+    public function setFulltextAnswer(string $fulltextAnswer)
     {
-        $this->fulltext = $fulltext;
+        $this->fulltextAnswer = $fulltextAnswer;
     }
 
     /**
      * @return int
      */
-    public function getRight()
+    public function getCorrect()
     {
-        return $this->right;
+        return $this->correct;
     }
 
     /**
-     * @param int $right
+     * @param int $correct
      */
-    public function setRight(int $right)
+    public function setCorrect(int $correct)
     {
-        $this->right = $right;
+        $this->correct = $correct;
+    }
+
+    /**
+     * @return Test
+     */
+    public function getTest()
+    {
+        return $this->test;
+    }
+
+    /**
+     * @param Test $test
+     */
+    public function setTest(Test $test)
+    {
+        $this->test = $test;
     }
 }

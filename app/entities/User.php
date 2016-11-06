@@ -13,6 +13,9 @@ class User implements IIdentity
 {
     use Identifier;
 
+    const REGISTERED = 'registered';
+    const ADMIN = 'admin';
+
     /**
      * @var string
      * @ORM\Column(type="string")

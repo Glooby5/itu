@@ -1,0 +1,33 @@
+{block content}
+<h1 n:block=title>Detail otázky</h1>
+
+<table>
+    <tr>
+        <td>ID</td>
+        <td>{$question->getId()}</td>
+    </tr>
+    <tr>
+        <td>Otázka</td>
+        <td>{$question->getQuestion()}</td>
+    </tr>
+    <tr>
+        <td>Odpověď A</td>
+        <td n:class="$question->getCorrect() == \App\Entities\Question::FIRST_ANSWER ? right">{$question->getFirst()}</td>
+    </tr>
+    <tr>
+        <td>Odpověď B</td>
+        <td n:class="$question->getCorrect() == \App\Entities\Question::SECOND_ANSWER ? right">{$question->getSecond()}</td>
+    </tr>
+    <tr>
+        <td>Odpověď C</td>
+        <td n:class="$question->getCorrect() == \App\Entities\Question::THIRD_ANSWER ? right">{$question->getThird()}</td>
+    </tr>
+    <tr>
+        <td>Otázka fulltext</td>
+        <td>{$question->getFulltextAnswer()}</td>
+    </tr>
+</table>
+
+
+<a n:href="Question:edit $question->getId()">Upravit</a>
+<a n:href="Question:delete $question->getId()">Odstranit</a>
