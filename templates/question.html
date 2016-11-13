@@ -5,41 +5,42 @@
     <link rel="stylesheet" type="text/css" href="style.css">
     <script src="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.6.3/less.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-    <script type="text/javascript">
-        // Step 1: Select the style element and change it to text/less
-        $('head style[type="text/css"]').attr('type','text/less');
-        // Step 2: Set development mode to see errors
-        less.env = 'development';
-        // Step 3: Tell Less to refresh the styles
-        less.refreshStyles();
-    </script>
 </head>
 <body>
 <div class="content">
-    <div class="picture-box"><img src=""></div>
-    <div class="progress"></div>
+    <div class="picture-box"><img src="../birds/cap-bily.jpg"></div>
 </div>
 <div class="controls">
-    <div class="box-conrol">
-        <div class="box box-effects">
-            <div class="answer-label">A</div>
-            <div class="answer">Lehká obtížnost znalostního testu. Obrázkový kvíz s výběrem z více možností a textovou nápovědou. Střední obtížnost znalostního testu. Poznávání správného druhu
-                z fotografií ptactva s textovou nápovědou.neco
-            </div>
-        </div>
-        <div class="box box-effects">
-            <div class="answer-label">B</div>
-            <div class="answer">Střední obtížnost znalostního testu. Poznávání správného druhu z fotografií ptactva s textovou nápovědou.Lehká obtížnost znalostního testu. Obrázkový kvíz s výběrem z více možností a textovou nápovědou.
-            </div>
-        </div>
-        <div class="box box-effects">
-            <div class="answer-label">C</div>
-            <div class="answer">Obrázkový kvíz s výběrem z více možností a textovou nápovědou. Střední obtížnost znalostního testu. Poznávání správného druhu
-                z fotografií ptactva s textovou nápovědou.
-            </div>
-        </div>
+    <div class="status-control">
+        <div class="progress-bar"><div class="progress"></div></div>
+        <div class="progress-label">10/15</div>
+        <div class="help">Nápověda</div>
+    </div>
+    <div class="box-control">
+        <table class="box-table" align="center">
+            <tbody>
+                <tr class="box box-effects">
+                    <td class="box-content-label">A</td>
+                    <td class="box-content">Lehká obtížnost znalostního testu. Obrázkový kvíz s výběrem z více možností a textovou nápovědou. Střední obtížnost znalostního testu. Poznávání správného druhu z fotografií ptactva s textovou nápovědou.neco</td>
+                </tr>
+                <tr><th></th></tr>
+                <tr class="box box-effects">
+                    <td class="box-content-label">B</td>
+                    <td class="box-content">Střední obtížnost znalostního testu. Poznávání správného druhu z fotografií ptactva s textovou nápovědou.Lehká obtížnost znalostního testu. Obrázkový kvíz s výběrem z více možností a textovou nápovědou.</td>
+                </tr>
+                <tr><th></th></tr>
+                <tr class="box box-effects">
+                    <td class="box-content-label">C</td>
+                    <td class="box-content">Obrázkový kvíz s výběrem z více možností a textovou nápovědou. Střední obtížnost znalostního testu. Poznávání správného druhu z fotografií ptactva s textovou nápovědou.</td>
+                </tr>
+                <tr><th></th></tr>
+                <tr class="box box-effects">
+                    <td class="box-content-label">C</td>
+                    <td class="box-content">Obrázkový kvíz s výběrem z více možností a textovou nápovědou. Střední obtížnost znalostního testu. Poznávání správného druhu z fotografií ptactva s textovou nápovědou.</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </div>
-<div class="help">?</div>
 </body>
 <html>

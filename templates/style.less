@@ -1,29 +1,50 @@
+/*********************/
+/* --- VARIABLES --- */
+/*********************/
+
 @background-color: #4A4A4A;
+@control-light-color: #FAFAFA;
 @text-color: #222222;
-@control-color: #E2E2E2;
+@control-medium-color: #f1f1f1;
+@control-dark-color: #DDDDDD;
 @green: #8BC34A;
 @gold: #FFC107;
+@red: #F44336;
 @progress-bar-color: #11A092;
-@shadow-color: #818181;
+@shadow-color: rgba(0,0,0,.1);
 
 @font-light: "Segoe UI light";
 @font-normal: "Segoe UI";
 
 @font-size-big: 2em;
 @font-size-medium: 1.5em;
-@font-size-normal: 1.1em;
+@font-size-normal: 1em;
 
-
-
-
+/*******************/
+/* --- DEFAULT --- */
+/*******************/
 
 body, html {
   height: 100%;
   width: 100%;
   margin: 0;
   padding:0;
+  color: @text-color;
   font-size: @font-size-normal;
   font-family: @font-normal;
+  background: @control-dark-color;
+}
+
+.background-image {
+  background-image: url("../birds/datel-cerny.jpg");
+  background-size: cover;
+  width: 100%;
+  height: 100%;
+}
+
+h1 {
+  font-family: @font-light;
+  font-size: @font-size-big;
 }
 
 /*******************/
@@ -31,23 +52,22 @@ body, html {
 /*******************/
 
 .content {
-  background: @background-color;
-  height: 50%;
+  position: relative;
+  height: 55%;
+  min-height: 150px;
   text-align: center;
+  background: @control-light-color;
+  .border(0,0,1px);
 }
 
 .picture-box {
-  display: table-inline;
   height: 100%;
-  background: black;
-  margin: 0 auto;
+  max-width: 100%;
 }
 
-.progress {
-  display: table-inline;
-  margin-top: -0.75rem;
-  height: 0.75rem;
-  background: @progress-bar-color;
+.picture-box img {
+  height: 100%;
+  .shadow(10rem,0rem);
 }
 
 /********************/
@@ -55,80 +75,284 @@ body, html {
 /********************/
 
 .controls {
-  background: @control-color;
-  padding-top: 2rem;
-  height: 50%;
+  width: 100%;
+  height: 45%;
+  min-height: 145px;
+  vertical-align: middle;
 }
 
-.answer-conrol {
-  height: 100%;
-  margin-top: 1rem;
+.box-control {
+  height: 90%;
+  overflow: hidden;
+  overflow-y: scroll;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.box-table {
+  margin-top: .5%;
+  width: 50%;
+  min-width: 500px;
+  text-align: center;
+  vertical-align: middle;
+  border-collapse: collapse;
+}
+
+.box-table th {
+  padding-top: 1%;
 }
 
 .box {
-  background: #FAFAFA;
-  display:table;
-  width: 50%;
-  height: 125px;
-
-  margin: 0 auto 0.5rem auto;
+  background: @control-medium-color;
+  height: 120px;
+  max-height:120px;
+  vertical-align: top;
   border-radius: 10px;
-  overflow:hidden;
+  overflow: hidden;
 }
 
-.box div {
-  display: table-cell;
-}
-
-.box-effects {
-  .shadow(10px);
+.box * {
+  height: inherit;
+  vertical-align: middle;
   .transition();
 }
 
-.box-effects:hover {
-  .shadow(10px, 5px);
+.box-effects {
+  .border(1px,1px,1px,1px);
+  .shadow();
+  .transition();
+
+  &:hover {
+    .shadow(10px,5px);
+  }
+
+  &:hover *:not(.box-content-label){
+    background: @control-light-color;
+  }
+
+  &:active *:not(.box-content-label){
+    background: @control-dark-color;
+  }
 }
 
-.answer-label {
+.box-content-label {
   background: @green;
-  width:15%;
+  width:120px;
+  min-width: 120px;
   color: white;
   font-size: @font-size-big*1.5;
   font-family: @font-light;
   text-align: center;
-  vertical-align: middle;
-  .shadow();
-  .transition();
+  .border(1px,1px);
 }
 
-.answer {
-  padding: 25px;
-  .transition();
-  &:active {
-    background-color: fadein(@gold, 10%);
-  }
+.box-content {
+  padding: 0 20px;
+  text-align: justify;
+}
+
+.box-content-name {
+  font-size: @font-size-big;
+  font-family: @font-light;
+  padding-left: 20px;
+}
+
+/**************************/
+/* --- STATUS-CONTROL --- */
+/**************************/
+
+.status-control {
+  position: relative;
+  z-index: 1;
+  background: @control-medium-color;
+  width: 100%;
+  height: 10%;
+  min-height: 45px;
+  .border(0,0,1px);
+  .shadow(1px, 3px);
+  overflow: hidden;
+}
+
+
+.status-control-style {
+  display: inline-table;
+  font-size: @font-size-medium;
+  height: 100%;
+  line-height: 1.7em;
+  padding: 0 10px;
+  text-align: center;
+  color: darken(@control-dark-color, 50%);
+  .border(1px, 1px);
+}
+
+.progress-bar {
+  color: @progress-bar-color;
+  background: @control-medium-color;
+  height: 3px;
+  .border(0,0,1px);
+}
+
+.progress {
+  background: @progress-bar-color;
+  height: 100%;
+  width: 75%;
+}
+
+.progress-label {
+  .status-control-style;
+  padding-left: 5px;
 }
 
 .help {
-  background: @green;
-  color: white;
-  position: fixed;
-  width: 5rem;
-  height: 5rem;
-  right:0;
-  bottom:0;
-  font-size: @font-size-big;
-  vertical-align: middle;
-  text-align: center;
-  line-height: 2.4em;
-  .shadow(.5rem, .1rem);
+  .status-control-style;
+  .transition();
+  position: absolute;
+  width: 200px;
+  right: 0;
+  top:0;
+
+  &:hover {
+    background: @green;
+    color: white;
+  }
+
+  &:active {
+    background: lighten(@green, 20%);
+  }
 }
 
-//Functions
-.transition(@duration: .2s, @property: all, @function: ease-out) {
+/*****************/
+/* --- LOGIN --- */
+/*****************/
+
+.login-content {
+  position: absolute;
+  top:0;
+  height: 100%;
+  width: 100%;
+  background: rgba(20, 20, 11, 0.9);
+}
+
+.login {
+  position: absolute;
+  margin: auto;
+  top:0;
+  left:0;
+  bottom: 0;
+  right: 0;
+  height: 350px;
+  width: 300px;
+  background: @control-light-color;
+  .border(1px,1px,1px,1px,@green);
+  box-shadow: 0 0 100px rgba(139,195,74, 0.25);
+}
+
+.login * {
+  vertical-align: middle;
+  margin: 30px auto;
+}
+
+.login h1 {
+  text-align: center;
+  padding-bottom: 25px;
+  margin: 0 25px;
+  .border(0,0,1px);
+}
+
+.login input {
+  background: @control-light-color;
+  display: block;
+  padding: 10px;
+  .border(0,0,1px);
+}
+
+.login input[type="submit"] {
+  .border(0);
+  padding: 10px 70px;
+  background: lighten(@green, 15%);
+  &:hover, &:focus {
+    background: @green;
+  }
+
+  &:active {
+    background: lighten(@green, 15%);
+  }
+  .transition(.1s);
+}
+
+.login input:focus {
+  outline: none;
+  border-color: @green;
+}
+
+
+/*********************/
+/* --- FUNCTIONS --- */
+/*********************/
+
+.transition(@duration: .1s, @property: all, @function: ease-out) {
   transition: @property @duration @function;
 }
 
-.shadow(@blur: 0.1rem, @spread: 0.1rem, @h-shadow: 0, @v-shadow: 0,@color: @shadow-color) {
+.shadow(@blur: 1px, @spread: 0px, @h-shadow: 0, @v-shadow: 0,@color: @shadow-color) {
   box-shadow: @h-shadow @v-shadow @blur @spread @color;
 }
+
+.border(@left: 0, @right: 0, @bottom: 0, @top: 0, @color: @shadow-color) {
+  border-left: @left solid @color;
+  border-right: @right solid @color;
+  border-top: @top solid @color;
+  border-bottom: @bottom solid @color;
+  -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+  -moz-box-sizing: border-box; /* Firefox, other Gecko */
+  box-sizing: border-box; /* Opera/IE 8+ */
+}
+
+/**********************/
+/* --- PROPERTIES --- */
+/**********************/
+.blurred {
+  -webkit-filter: blur(10px);
+  -moz-filter: blur(10px);
+  -o-filter: blur(10px);
+  -ms-filter: blur(10px);
+  filter: blur(10px);
+}
+
+
+.transparent-light {
+  background: fade(@control-light-color, 85%);
+  margin: auto;
+  top:0;
+  left:0;
+  bottom: 0;
+  right: 0;
+  height: 100%;
+
+  table {
+    position: absolute;
+    margin: auto;
+    top:0;
+    left:0;
+    bottom: 0;
+    right: 0;
+  }
+}
+
+.dock-bottom {
+  bottom: 0;
+}
+
+.green {
+  background: @green;
+}
+
+.gold {
+  background: @gold;
+}
+
+.red {
+  background: @red;
+}
+
