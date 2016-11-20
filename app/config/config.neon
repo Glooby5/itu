@@ -13,3 +13,16 @@ session:
 
 services:
 	router: App\RouterFactory::createRouter
+	- App\Model\UserManager
+	- App\Repositories\UserRepository
+	- App\Repositories\TestRepository
+	- App\Repositories\QuestionRepository
+	- App\Forms\SignInFormFactory
+	- App\Forms\TestFormFactory
+	- App\Forms\QuestionFormFactory
+
+extensions:
+	console: Kdyby\Console\DI\ConsoleExtension
+	events: Kdyby\Events\DI\EventsExtension
+	annotations: Kdyby\Annotations\DI\AnnotationsExtension
+	doctrine: Kdyby\Doctrine\DI\OrmExtension

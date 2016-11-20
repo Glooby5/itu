@@ -1,0 +1,13 @@
+{block content}
+<h1 n:block=title>Přehled testů</h1>
+
+<table>
+    {foreach $tests as $test}
+        <tr>
+            <td><a n:href="Test:detail $test->getId()">{$test->getId()}</a></td>
+            <td>{$test->getName()}</td>
+        </tr>
+    {/foreach}
+</table>
+
+<a n:href="Test:create">Vytvořit nový</a>
