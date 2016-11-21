@@ -2,6 +2,7 @@
 
 namespace App\Entities;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Kdyby\Doctrine\Entities\Attributes\Identifier;
 
@@ -19,6 +20,17 @@ class Test
     protected $name;
 
     /**
+     * @var Question[]
+     * @ORM\OneToMany(targetEntity="Question", mappedBy="test")
+     */
+    protected $questions;
+
+    public function __construct()
+    {
+        $this->questions = new ArrayCollection();
+    }
+
+    /**
      * @return string
      */
     public function getName()
@@ -32,5 +44,13 @@ class Test
     public function setName(string $name)
     {
         $this->name = $name;
+    }
+
+    /**
+     * @return Question[]
+     */
+    public function getQuestions()
+    {
+        return $this->questions;
     }
 }

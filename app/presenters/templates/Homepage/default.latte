@@ -4,7 +4,7 @@
 <div class="transparent-light">
 	<div class="background-image" />
 	<div class="box-control">
-		<table class="box-table" align="center">
+		<table class="box-table difficulty-select" align="center">
 			<tbody>
 			<tr class="box box-effects">
 				<td class="box-content-name">Lehká</td>
@@ -30,8 +30,86 @@
 <div class="login-content">
 	<div class="login">
 		<div><h1>Přihlášení</h1></div>
-		<input type="text" placeholder="Jméno"/>
-		<input type="text" placeholder="E-mail" />
-		<input type="submit" value="Přihlásit" />
+		<input type="text" placeholder="Jméno" id="name"/>
+		<input type="text" placeholder="E-mail" id="email"/>
+		<input type="submit" value="Přihlásit" id="submitLogin"/>
 	</div>
 </div>
+
+<div class="test-content" style="display: none;">
+    {foreach $test->getQuestions() as $key => $question}
+        <div class="question qnum-{$key}">
+            <img src="{$question->getQuestion()}"/>
+        </div>
+    {/foreach}
+
+
+    <div class="controls">
+        <div class="status-control">
+            <div class="progress-bar"><div class="progress"></div></div>
+            <div class="progress-label">10/15</div>
+            <div class="help">Nápověda</div>
+        </div>
+    </div>
+
+    {foreach $test->getQuestions() as $key => $question}
+        <div class="question qnum-{$key}">
+
+            <div class="controls">
+                <div class="box-control">
+                    <table class="box-table" align="center">
+                        <tbody>
+                        <tr class="box box-effects answer" data-answer="0">
+                            <td class="box-content-label">A</td>
+                            <td class="box-content">{$question->getFirst()}</td>
+                        </tr>
+                        <tr><th></th></tr>
+                        <tr class="box box-effects answer" data-answer="1">
+                            <td class="box-content-label">B</td>
+                            <td class="box-content">{$question->getSecond()}</td>
+                        </tr>
+                        <tr><th></th></tr>
+                        <tr class="box box-effects answer" data-answer="2">
+                            <td class="box-content-label">C</td>
+                            <td class="box-content">{$question->getThird()}</td>
+                        </tr>
+                        <tr><th></th></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    {/foreach}
+
+</div>
+
+<script type="text/javascript">
+    var email;
+    var password;
+    var questions = [];
+    var actual = 0;
+
+    $(document).ready(function() {
+
+        $("#submitLogin").on('click', function() {
+            email = $('#email').val();
+
+            if (!email) {
+                alert("E-mail je povinný!");
+                return;
+            }
+
+            $('.login-content').hide();
+        });
+
+        $('.box-effects').on('click', function () {
+            $('.difficulty-select').hide();
+            $('.test-content').show();
+            $('.qnum-0').show();
+        });
+
+        $('.answer').on('click', function() {
+            questions[actual] = $(this).data('answer');
+        });
+    });
+</script>

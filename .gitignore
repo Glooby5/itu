@@ -6,3 +6,5 @@ vendor/*
 !web.config
 app/config/config.local.neon
 .idea
+node_modules
+www/css/style.css
