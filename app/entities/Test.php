@@ -13,6 +13,10 @@ class Test
 {
     use Identifier;
 
+    const DIFFICULTY_WITH_HELP = 1;
+    const DIFFICULTY_WITHOUT_HELP = 2;
+    const DIFFICULTY_FULLTEXT = 3;
+
     /**
      * @var string
      * @ORM\Column(type="string")

@@ -6,19 +6,19 @@
 	<div class="box-control">
 		<table class="box-table difficulty-select" align="center">
 			<tbody>
-			<tr class="box box-effects">
+			<tr class="box box-effects" data-difficulty="0">
 				<td class="box-content-name">Lehká</td>
 				<td class="box-content">Lehká obtížnost znalostního testu. Obrázkový kvíz s výběrem z více možností a textovou nápovědou.</td>
 				<td class="box-content-label green" />
 			</tr>
 			<tr><th></th></tr>
-			<tr class="box box-effects">
+			<tr class="box box-effects" data-difficulty="1">
 				<td class="box-content-name">Střední</td>
 				<td class="box-content">Střední obtížnost znalostního testu. Poznávání správného druhu z fotografií ptactva s textovou nápovědou..</td>
 				<td class="box-content-label gold" />
 			</tr>
 			<tr><th></th></tr>
-			<tr class="box box-effects">
+			<tr class="box box-effects" data-difficulty="2">
 				<td class="box-content-name">Těžká</td>
 				<td class="box-content">Obrázkový kvíz s výběrem z více možností a textovou nápovědou. Střední obtížnost znalostního testu.</td>
 				<td class="box-content-label red" />
@@ -32,13 +32,13 @@
 		<div><h1>Přihlášení</h1></div>
 		<input type="text" placeholder="Jméno" id="name"/>
 		<input type="text" placeholder="E-mail" id="email"/>
-		<input type="submit" value="Přihlásit" id="submitLogin"/>
+		<span class="submit"><input type="submit" value="Přihlásit" id="submitLogin"/></span>
 	</div>
 </div>
 
 <div class="test-content" style="display: none;">
     {foreach $test->getQuestions() as $key => $question}
-        <div class="question qnum-{$key}">
+        <div class="question qnum-{$key}" style="display: none;">
             <img src="{$question->getQuestion()}"/>
         </div>
     {/foreach}
@@ -47,29 +47,29 @@
     <div class="controls">
         <div class="status-control">
             <div class="progress-bar"><div class="progress"></div></div>
-            <div class="progress-label">10/15</div>
+            <div class="progress-label"><span class="actual">1</span>/{$test->getQuestions()->count()}</div>
             <div class="help">Nápověda</div>
         </div>
     </div>
 
     {foreach $test->getQuestions() as $key => $question}
-        <div class="question qnum-{$key}">
+        <div class="question qnum-{$key}" style="display: none;">
 
             <div class="controls">
                 <div class="box-control">
                     <table class="box-table" align="center">
                         <tbody>
-                        <tr class="box box-effects answer" data-answer="0">
+                        <tr class="box box-effects answer" data-answer="1">
                             <td class="box-content-label">A</td>
                             <td class="box-content">{$question->getFirst()}</td>
                         </tr>
                         <tr><th></th></tr>
-                        <tr class="box box-effects answer" data-answer="1">
+                        <tr class="box box-effects answer" data-answer="2">
                             <td class="box-content-label">B</td>
                             <td class="box-content">{$question->getSecond()}</td>
                         </tr>
                         <tr><th></th></tr>
-                        <tr class="box box-effects answer" data-answer="2">
+                        <tr class="box box-effects answer" data-answer="3">
                             <td class="box-content-label">C</td>
                             <td class="box-content">{$question->getThird()}</td>
                         </tr>
@@ -83,13 +83,31 @@
 
 </div>
 
+<a class="ajax" n:href="submit!">update</a>
+
+<div id="result-container">
+    <span class="correct"></span>
+    <span class="percent"></span>
+</div>
+
 <script type="text/javascript">
     var email;
     var password;
+    var difficulty;
     var questions = [];
     var actual = 0;
+    var total = {$test->getQuestions()->count()}
 
     $(document).ready(function() {
+        $('.progress').css('width', 100 / total + '%');
+
+        $('#email').keyup(function () {
+            if ($(this).val() && isValidEmailAddress($(this).val())) {
+                $(".submit").fadeIn(500);
+            } else {
+                $(".submit").fadeOut(500);
+            }
+        });
 
         $("#submitLogin").on('click', function() {
             email = $('#email').val();
@@ -102,7 +120,8 @@
             $('.login-content').hide();
         });
 
-        $('.box-effects').on('click', function () {
+        $('.difficulty-select .box-effects').on('click', function () {
+            difficulty = $(this).data('difficulty');
             $('.difficulty-select').hide();
             $('.test-content').show();
             $('.qnum-0').show();
@@ -110,6 +129,35 @@
 
         $('.answer').on('click', function() {
             questions[actual] = $(this).data('answer');
+            $('.qnum-' + actual).hide();
+            actual++;
+
+            if (actual < total) {
+                $('.progress').css('width', 100 * (actual + 1) / total + '%');
+                $('.progress-label .actual').text(actual + 1);
+            }
+
+            if (actual == total) {
+                console.log(questions);
+                $.nette.ajax({
+                    url: {link submit!},
+                    data: {
+                        email: email,
+                        difficulty: difficulty,
+                        test: JSON.stringify(questions)
+                    }
+                }).done(function(payload) {
+                    $resultContainer = $('#result-container');
+                    $resultContainer.find('.correct').text(payload.correct);
+                    $resultContainer.find('.percent').text(payload.percent + '%');
+                });
+
+
+                return;
+            }
+
+            $('.qnum-' + actual).show();
+            console.log(questions);
         });
     });
 </script>
