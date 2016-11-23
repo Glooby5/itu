@@ -17,6 +17,7 @@ services:
 	- App\Repositories\UserRepository
 	- App\Repositories\TestRepository
 	- App\Repositories\QuestionRepository
+	- App\Repositories\ResultRepository
 	- App\Forms\SignInFormFactory
 	- App\Forms\TestFormFactory
 	- App\Forms\QuestionFormFactory

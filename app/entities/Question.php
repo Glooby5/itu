@@ -54,7 +54,7 @@ class Question
 
     /**
      * @var Test
-     * @ORM\ManyToOne(targetEntity="Test")
+     * @ORM\ManyToOne(targetEntity="Test", inversedBy="Test")
      */
     protected $test;
 
