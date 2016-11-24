@@ -39,7 +39,7 @@
 
 <div class="test-content" style="display: none;">
     {foreach $test->getQuestions() as $key => $question}
-        <div class="content question qnum-{$key}" style="display: none;">
+        <div class="content question qnum-{$key} question-img" style="display: none;">
             <div class="picture-box"><img src="{$question->getQuestion()}"/></div>
         </div>
     {/foreach}
@@ -50,7 +50,7 @@
             <div class="help">Nápověda</div>
         </div>
         {foreach $test->getQuestions() as $key => $question}
-            <div class="box-control question qnum-{$key}" style="display: none;">
+            <div class="box-control question qnum-{$key} answer-box" style="display: none;">
                 <table class="box-table" align="center">
                     <tbody>
                     <tr class="box box-effects answer" data-answer="1">
@@ -128,7 +128,7 @@
 
             if (actual == total) {
 
-                $('.qnum-' + (actual-1)).hide();
+                $('.test-content').hide();
 
                 console.log(questions);
                 $.nette.ajax({
@@ -148,18 +148,9 @@
                 return;
             }
 
-            $('.qnum-' + (actual-1) + ':first').fadeOut(2000, function () {
-                $('.qnum-' + (actual-1)).hide();
-                $('.qnum-' + actual).show();
-            });
-
-            /*$('.qnum-1').animate({'left': '100%'}, 10);
-            $('.qnum-' + actual).show();
-
-            $('.qnum-0').animate({'left': '-100%'}, 3000);
-            $('.qnum-1').animate({'left': '0%'}, 3000).done(function() {
-                $('.qnum-' + (actual-1)).hide();
-            });*/
+            $('.qnum-' + actual + '.answer-box').show();
+            $('.qnum-' + (actual - 1) + '.answer-box').hide();
+            $('.qnum-' + actual + '.question-img').fadeIn(500);
 
             console.log(questions);
         });
