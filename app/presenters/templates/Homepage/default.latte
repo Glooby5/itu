@@ -27,63 +27,53 @@
 		</table>
 	</div>
 </div>
+
 <div class="login-content">
 	<div class="login">
 		<div><h1>Přihlášení</h1></div>
 		<input type="text" placeholder="Jméno" id="name"/>
-		<input type="text" placeholder="E-mail" id="email"/>
-		<span class="submit"><input type="submit" value="Přihlásit" id="submitLogin"/></span>
+		<input type="text" placeholder="E-mail" id="email" value="ondra.zemanek@gmail.com"/>
+		<input type="submit" value="Přihlásit" id="submitLogin"/>
 	</div>
 </div>
 
 <div class="test-content" style="display: none;">
     {foreach $test->getQuestions() as $key => $question}
-        <div class="question qnum-{$key}" style="display: none;">
-            <img src="{$question->getQuestion()}"/>
+        <div class="content question qnum-{$key}" style="display: none;">
+            <div class="picture-box"><img src="{$question->getQuestion()}"/></div>
         </div>
     {/foreach}
-
-
     <div class="controls">
         <div class="status-control">
             <div class="progress-bar"><div class="progress"></div></div>
             <div class="progress-label"><span class="actual">1</span>/{$test->getQuestions()->count()}</div>
             <div class="help">Nápověda</div>
         </div>
-    </div>
-
-    {foreach $test->getQuestions() as $key => $question}
-        <div class="question qnum-{$key}" style="display: none;">
-
-            <div class="controls">
-                <div class="box-control">
-                    <table class="box-table" align="center">
-                        <tbody>
-                        <tr class="box box-effects answer" data-answer="1">
-                            <td class="box-content-label">A</td>
-                            <td class="box-content">{$question->getFirst()}</td>
-                        </tr>
-                        <tr><th></th></tr>
-                        <tr class="box box-effects answer" data-answer="2">
-                            <td class="box-content-label">B</td>
-                            <td class="box-content">{$question->getSecond()}</td>
-                        </tr>
-                        <tr><th></th></tr>
-                        <tr class="box box-effects answer" data-answer="3">
-                            <td class="box-content-label">C</td>
-                            <td class="box-content">{$question->getThird()}</td>
-                        </tr>
-                        <tr><th></th></tr>
-                        </tbody>
-                    </table>
-                </div>
+        {foreach $test->getQuestions() as $key => $question}
+            <div class="box-control question qnum-{$key}" style="display: none;">
+                <table class="box-table" align="center">
+                    <tbody>
+                    <tr class="box box-effects answer" data-answer="1">
+                        <td class="box-content-label">A</td>
+                        <td class="box-content">{$question->getFirst()}</td>
+                    </tr>
+                    <tr><th></th></tr>
+                    <tr class="box box-effects answer" data-answer="2">
+                        <td class="box-content-label">B</td>
+                        <td class="box-content">{$question->getSecond()}</td>
+                    </tr>
+                    <tr><th></th></tr>
+                    <tr class="box box-effects answer" data-answer="3">
+                        <td class="box-content-label">C</td>
+                        <td class="box-content">{$question->getThird()}</td>
+                    </tr>
+                    <tr><th></th></tr>
+                    </tbody>
+                </table>
             </div>
-        </div>
-    {/foreach}
-
+        {/foreach}
+    </div>
 </div>
-
-<a class="ajax" n:href="submit!">update</a>
 
 <div id="result-container">
     <span class="correct"></span>
@@ -101,13 +91,13 @@
     $(document).ready(function() {
         $('.progress').css('width', 100 / total + '%');
 
-        $('#email').keyup(function () {
+        /*$('#email').keyup(function () {
             if ($(this).val() && isValidEmailAddress($(this).val())) {
                 $(".submit").fadeIn(500);
             } else {
                 $(".submit").fadeOut(500);
             }
-        });
+        });*/
 
         $("#submitLogin").on('click', function() {
             email = $('#email').val();
@@ -117,19 +107,18 @@
                 return;
             }
 
-            $('.login-content').hide();
+            $('.login-content').fadeOut(250);
         });
 
         $('.difficulty-select .box-effects').on('click', function () {
             difficulty = $(this).data('difficulty');
-            $('.difficulty-select').hide();
-            $('.test-content').show();
-            $('.qnum-0').show();
+            $('.transparent-light').fadeOut(500);
+            $('.test-content').fadeIn(500);
+            $('.qnum-0').fadeIn(500);
         });
 
         $('.answer').on('click', function() {
             questions[actual] = $(this).data('answer');
-            $('.qnum-' + actual).hide();
             actual++;
 
             if (actual < total) {
@@ -138,6 +127,9 @@
             }
 
             if (actual == total) {
+
+                $('.qnum-' + (actual-1)).hide();
+
                 console.log(questions);
                 $.nette.ajax({
                     url: {link submit!},
@@ -156,7 +148,19 @@
                 return;
             }
 
+            $('.qnum-' + (actual-1) + ':first').fadeOut(2000, function () {
+                $('.qnum-' + (actual-1)).hide();
+                $('.qnum-' + actual).show();
+            });
+
+            /*$('.qnum-1').animate({'left': '100%'}, 10);
             $('.qnum-' + actual).show();
+
+            $('.qnum-0').animate({'left': '-100%'}, 3000);
+            $('.qnum-1').animate({'left': '0%'}, 3000).done(function() {
+                $('.qnum-' + (actual-1)).hide();
+            });*/
+
             console.log(questions);
         });
     });

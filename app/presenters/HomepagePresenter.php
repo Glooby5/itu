@@ -70,6 +70,10 @@ class HomepagePresenter extends Nette\Application\UI\Presenter
     {
         $user = $this->userRepository->findBy(['email' => $email]);
 
+        if ($user) {
+            $user = $user[0];
+        }
+        
         if (!$user) {
             $user = new User();
             $user->setEmail($email);
