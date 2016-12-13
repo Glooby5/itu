@@ -303,6 +303,60 @@ h1 {
 }
 
 
+/**********************/
+/* --- STATISTICS --- */
+/**********************/
+#stats-container {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+
+#result-container {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+
+.resultbar {
+  width: 100%;
+  height: 100%;
+  margin: auto;
+  text-align: center;
+  background: rgba(200, 200, 200, 0.65);
+}
+
+.result-circle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 400px;
+  height: 450px;
+  margin: auto;
+}
+
+.result-circle div {
+  position: absolute;
+  top: 130px;
+  left: 0;
+  width: 100%;
+}
+
+.result-circle div, p {
+  color: @text-color;
+  font-size: @font-size-big;
+  font-family: @font-normal;
+  font-weight: 500;
+  line-height: 40px;
+  text-align: center;
+}
+
 /*********************/
 /* --- FUNCTIONS --- */
 /*********************/
@@ -338,6 +392,7 @@ h1 {
 
 
 .transparent-light {
+  position: fixed;
   background: fade(@control-light-color, 85%);
   margin: auto;
   top:0;

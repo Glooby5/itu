@@ -75,14 +75,24 @@
     </div>
 </div>
 
-<div id="result-container">
-    <span class="correct"></span>
-    <span class="percent"></span>
+<div id="result-container" style="display: none;" >
+    <div class="background-image">
+        <div class="resultbar">
+            <div class="result-circle">
+                <div class="center-text"></div>
+                <p>Váš výsledek.</p>
+                <p class="correct" style="display: none;"></p>
+                <a href="#stats-container">Celkové výsledky</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="stats-container" style="display: none;" >
 </div>
 
 <script type="text/javascript">
     var email;
-    var password;
     var difficulty;
     var questions = [];
     var actual = 0;
@@ -128,8 +138,10 @@
 
             if (actual == total) {
 
-                $('.test-content').hide();
-
+                $('.test-content').fadeOut(500);
+                $('#result-container').fadeIn(500);
+                $('#stats-container').fadeIn(500);
+                animateWaitingForResult();
                 console.log(questions);
                 $.nette.ajax({
                     url: {link submit!},
@@ -141,7 +153,7 @@
                 }).done(function(payload) {
                     $resultContainer = $('#result-container');
                     $resultContainer.find('.correct').text(payload.correct);
-                    $resultContainer.find('.percent').text(payload.percent + '%');
+                    $resultContainer.find('.result-circle').attr('data-percent', payload.percent /*+ '%'*/);
                 });
 
 
@@ -150,9 +162,61 @@
 
             $('.qnum-' + actual + '.answer-box').show();
             $('.qnum-' + (actual - 1) + '.answer-box').hide();
-            $('.qnum-' + actual + '.question-img').fadeIn(500);
+            $('.qnum-' + actual + '.question-img').fadeIn(1000);
 
             console.log(questions);
         });
+
+        $("a").on('click', function(event) {
+            if (this.hash !== "") {
+                event.preventDefault();
+                var hash = this.hash;
+                $('html, body').animate({
+                    scrollTop: $(hash).offset().top
+                }, 800, function(){
+                    window.location.hash = hash;
+                });
+            }
+        });
+
+        function animateWaitingForResult() {
+            $('.resultbar').ready(function () {
+                $(this).find('.center-text').text("Vyčkejte...");
+                $(this).find('.result-circle').circleProgress({
+                    startAngle: -Math.PI / 2,
+                    value: 1,
+                    thickness: 30,
+                    size: 300,
+                    fill: { color: '#4A4A4A' },
+                }).one('circle-animation-end', function (event) {
+                    if($(this).find('.correct').text() == '') {
+                        animateWaitingForResult();
+                    } else {
+                        animateStatistics();
+                    }
+                }).stop();
+            });
+        };
+
+        function animateStatistics() {
+            $('.resultbar').ready(function () {
+                var percent = $(this).find('.result-circle').attr('data-percent');
+                var barcolor = '#8BC34A';
+                if(percent <= 25){
+                    barcolor = '#F44336';
+                } else if (percent <= 50) {
+                    barcolor = '#FFC107';
+                }
+                $(this).find('.result-circle').circleProgress({
+                    startAngle: -Math.PI / 2,
+                    value: percent / 100,
+                    thickness: 30,
+                    size: 300,
+                    fill: { color: barcolor },
+                }).on('circle-animation-progress', function (event, progress, stepValue) {
+                    $(this).find('div').text((stepValue*100).toFixed(1) + "%");
+                }).stop();
+            });
+        };
     });
 </script>
