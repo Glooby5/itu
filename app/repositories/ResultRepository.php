@@ -48,6 +48,16 @@ class ResultRepository
         return $this->repository->findBy($options);
     }
 
+    public function getLastResults($difficulty)
+    {
+        return $this->repository->findBy(['difficulty' => $difficulty], ['date' => 'DESC'], 10);
+    }
+
+    public function getMyLastResults($difficulty, $user)
+    {
+        return $this->repository->findBy(['difficulty' => $difficulty, 'user' => $user], ['date' => 'DESC'], 10);
+    }
+
     /**
      * @return EntityManager
      */

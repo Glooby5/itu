@@ -6,19 +6,19 @@
 	<div class="box-control">
 		<table class="box-table difficulty-select" align="center">
 			<tbody>
-			<tr class="box box-effects" data-difficulty="0">
+			<tr class="box box-effects" data-difficulty="1">
 				<td class="box-content-name">Lehká</td>
 				<td class="box-content">Lehká obtížnost znalostního testu. Obrázkový kvíz s výběrem z více možností a textovou nápovědou.</td>
 				<td class="box-content-label green" />
 			</tr>
 			<tr><th></th></tr>
-			<tr class="box box-effects" data-difficulty="1">
+			<tr class="box box-effects" data-difficulty="2">
 				<td class="box-content-name">Střední</td>
 				<td class="box-content">Střední obtížnost znalostního testu. Poznávání správného druhu z fotografií ptactva s textovou nápovědou..</td>
 				<td class="box-content-label gold" />
 			</tr>
 			<tr><th></th></tr>
-			<tr class="box box-effects" data-difficulty="2">
+			<tr class="box box-effects" data-difficulty="3">
 				<td class="box-content-name">Těžká</td>
 				<td class="box-content">Obrázkový kvíz s výběrem z více možností a textovou nápovědou. Střední obtížnost znalostního testu.</td>
 				<td class="box-content-label red" />
@@ -53,19 +53,24 @@
             <div class="box-control question qnum-{$key} answer-box" style="display: none;">
                 <table class="box-table" align="center">
                     <tbody>
-                    <tr class="box box-effects answer" data-answer="1">
+                    <tr data-answer="1" n:class="$question->getCorrect() == \App\Entities\Question::FIRST_ANSWER ? correct, box, box-effects, answer">
                         <td class="box-content-label">A</td>
                         <td class="box-content">{$question->getFirst()}</td>
                     </tr>
                     <tr><th></th></tr>
-                    <tr class="box box-effects answer" data-answer="2">
+                    <tr data-answer="2" n:class="$question->getCorrect() == \App\Entities\Question::SECOND_ANSWER ? correct, box, box-effects, answer">
                         <td class="box-content-label">B</td>
                         <td class="box-content">{$question->getSecond()}</td>
                     </tr>
                     <tr><th></th></tr>
-                    <tr class="box box-effects answer" data-answer="3">
+                    <tr data-answer="3" n:class="$question->getCorrect() == \App\Entities\Question::THIRD_ANSWER ? correct, box, box-effects, answer">
                         <td class="box-content-label">C</td>
                         <td class="box-content">{$question->getThird()}</td>
+                    </tr>
+                    <tr><th></th></tr>
+                    <tr data-answer="fulltext" class="box box-effects answer fulltext">
+                        <td class="box-content-label fulltext-send"></td>
+                        <td class="box-content"><input type="text"/></td>
                     </tr>
                     <tr><th></th></tr>
                     </tbody>
@@ -87,8 +92,11 @@
         </div>
     </div>
 </div>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
 <div id="stats-container" style="display: none;" >
+    <div id="my_lasts_div"></div>
+    <div id="chart_div"></div>
 </div>
 
 <script type="text/javascript">
@@ -97,6 +105,8 @@
     var questions = [];
     var actual = 0;
     var total = {$test->getQuestions()->count()}
+
+    google.charts.load('current', { packages: ['corechart', 'bar']});
 
     $(document).ready(function() {
         $('.progress').css('width', 100 / total + '%');
@@ -122,13 +132,18 @@
 
         $('.difficulty-select .box-effects').on('click', function () {
             difficulty = $(this).data('difficulty');
+
+            if (difficulty == 3) {
+                $('.box-effects.answer').not('.fulltext').hide();
+            }
+
             $('.transparent-light').fadeOut(500);
             $('.test-content').fadeIn(500);
             $('.qnum-0').fadeIn(500);
         });
 
-        $('.answer').on('click', function() {
-            questions[actual] = $(this).data('answer');
+        function nextQuestion(answer) {
+            questions[actual] = answer;
             actual++;
 
             if (actual < total) {
@@ -154,6 +169,8 @@
                     $resultContainer = $('#result-container');
                     $resultContainer.find('.correct').text(payload.correct);
                     $resultContainer.find('.result-circle').attr('data-percent', payload.percent /*+ '%'*/);
+                    drawChart(payload.myLast, 'my_lasts_div', 'Moje poslední výsledky', '#f48c42');
+                    drawChart(payload.last, 'chart_div', 'Poslední výsledky ostatních', '#4b42f4');
                 });
 
 
@@ -165,6 +182,21 @@
             $('.qnum-' + actual + '.question-img').fadeIn(1000);
 
             console.log(questions);
+
+        }
+
+        $('.answer').not(".fulltext").on('click', function() {
+            nextQuestion($(this).data('answer'));
+        });
+
+        $('.fulltext-send').on('click', function() {
+            var value = $(this).next().find('input').val();
+
+            if (!value) {
+                return;
+            }
+
+            nextQuestion($(this).next().find('input').val());
         });
 
         $("a").on('click', function(event) {
@@ -218,5 +250,29 @@
                 }).stop();
             });
         };
+
+        function drawChart(lasts, div, text, color) {
+
+            // Create the data table.
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'Datum');
+            data.addColumn('number', 'Výsledky');
+
+
+            $.each(lasts, function( index, value ) {
+                data.addRow([index, value]);
+            });
+
+            // Set chart options
+            var options = {'title': text,
+                'width':800,
+                'height':600,
+                'colors': [color]
+            };
+
+            // Instantiate and draw our chart, passing in some options.
+            var chart = new google.visualization.ColumnChart(document.getElementById(div));
+            chart.draw(data, options);
+        }
     });
 </script>
