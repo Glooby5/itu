@@ -69,8 +69,8 @@
                     </tr>
                     <tr><th></th></tr>
                     <tr data-answer="fulltext" class="box box-effects answer fulltext">
+                        <td class="box-content"><input type="text" placeholder="Zde napište svoji odpověď..."/></td>
                         <td class="box-content-label fulltext-send"></td>
-                        <td class="box-content"><input type="text"/></td>
                     </tr>
                     <tr><th></th></tr>
                     </tbody>
@@ -87,7 +87,7 @@
                 <div class="center-text"></div>
                 <p>Váš výsledek.</p>
                 <p class="correct" style="display: none;"></p>
-                <a href="#stats-container">Celkové výsledky</a>
+                <span class="slide-to-stats">Celkové výsledky</span>
             </div>
         </div>
     </div>
@@ -109,7 +109,7 @@
     google.charts.load('current', { packages: ['corechart', 'bar']});
 
     $(document).ready(function() {
-        $('.progress').css('width', 100 / total + '%');
+        $('.progress').css('width', '0%');
 
         /*$('#email').keyup(function () {
             if ($(this).val() && isValidEmailAddress($(this).val())) {
@@ -135,6 +135,7 @@
 
             if (difficulty == 3) {
                 $('.box-effects.answer').not('.fulltext').hide();
+                $('.help').hide();
             } else {
                 $('.box-effects.answer.fulltext').hide();
             }
@@ -149,12 +150,12 @@
             actual++;
 
             if (actual < total) {
-                $('.progress').css('width', 100 * (actual + 1) / total + '%');
+                $('.progress').css('width', (100 / total) * actual + '%');
                 $('.progress-label .actual').text(actual + 1);
             }
 
             if (actual == total) {
-
+                $('.progress').css('width', '100%');
                 $('.test-content').fadeOut(500);
                 $('#result-container').fadeIn(500);
                 $('#stats-container').fadeIn(500);
@@ -191,14 +192,29 @@
             nextQuestion($(this).data('answer'));
         });
 
+        $('.fulltext').keyup(function(e){
+            if(e.keyCode == 13) {
+                $(this).find('.fulltext-send').trigger("click");
+            }
+        });
+
         $('.fulltext-send').on('click', function() {
-            var value = $(this).next().find('input').val();
+            var value = $(this).prev().find('input').val();
 
             if (!value) {
                 return;
             }
 
-            nextQuestion($(this).next().find('input').val());
+            nextQuestion($(this).prev().find('input').val());
+        });
+
+        $(".help").on('click', function() {
+            $questionControl = $('.box-control.question' + '.qnum-' + actual);
+            $questions = $questionControl.children('.box-table').children().children('.box').each(function () {
+                if(!$(this).hasClass('correct') && !$(this).hasClass('fulltext')) {
+                    $(this).css('opacity', '0.5');
+                }
+            });
         });
 
         $("a").on('click', function(event) {
@@ -211,6 +227,12 @@
                     window.location.hash = hash;
                 });
             }
+        });
+
+        $('.slide-to-stats').on('click', function (event) {
+            $('html, body').animate({
+                scrollTop: $("#stats-container").offset().top
+            }, 1000);
         });
 
         function animateWaitingForResult() {
@@ -269,7 +291,8 @@
             var options = {'title': text,
                 'width':800,
                 'height':600,
-                'colors': [color]
+                'colors': [color],
+                'backgroundColor': '#DDDDDD'
             };
 
             // Instantiate and draw our chart, passing in some options.
