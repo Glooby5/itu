@@ -63,7 +63,7 @@ class QuestionFormFactory extends Nette\Application\UI\Control
     private function setDefaults(Question $question, $form)
     {
         $form['id']->setDefaultValue($question->getId());
-        $form['test']->setDefaultValue($question->getTest());
+        $form['test']->setDefaultValue($question->getTest()->getId());
         $form['question']->setDefaultValue($question->getQuestion());
         $form['answer1']->setDefaultValue($question->getFirst());
         $form['answer2']->setDefaultValue($question->getSecond());

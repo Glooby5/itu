@@ -43,9 +43,6 @@ class HomepagePresenter extends Nette\Application\UI\Presenter
         $correct = 0;
 
         foreach ($test->getQuestions() as $i => $question) {
-            if (!isset($filledQuestions[$i])) {
-                throw new Nette\InvalidStateException();
-            }
 
             if ($difficulty == Test::DIFFICULTY_FULLTEXT) {
                 if ($question->getFulltextAnswer() == $filledQuestions[$i]) {
@@ -58,17 +55,38 @@ class HomepagePresenter extends Nette\Application\UI\Presenter
             }
         }
 
-        $this->saveResult($email, $difficulty, $test, $correct);
+        $percent = $correct / $test->getQuestions()->count() * 100;
+        $user = $this->saveResult($email, $difficulty, $test, $percent);
+
+        $last = $this->resultRepository->getLastResults($difficulty);
+        $lastValues = [];
+
+        foreach ($last as $l) {
+            $lastValues[$l->getDate()->format('d.m. Y H:i')] = $l->getResult();
+        }
+
+        $myLast = $this->resultRepository->getMyLastResults($difficulty, $user->getId());
+        $myLastValues = [];
+
+        foreach ($myLast as $l) {
+            $myLastValues[$l->getDate()->format('d.m. Y H:i')] = $l->getResult();
+        }
 
         $this->sendJson([
             'correct' => $correct,
-            'percent' => $correct / $test->getQuestions()->count() * 100
+            'percent' => $percent,
+            'last' => $lastValues,
+            'myLast' => $myLastValues,
         ]);
     }
 
     private function saveResult($email, $difficulty, Test $test, $correct)
     {
         $user = $this->userRepository->findBy(['email' => $email]);
+
+        if ($user) {
+            $user = $user[0];
+        }
 
         if (!$user) {
             $user = new User();
@@ -86,5 +104,7 @@ class HomepagePresenter extends Nette\Application\UI\Presenter
 
         $this->resultRepository->getEntityManager()->persist($result);
         $this->resultRepository->getEntityManager()->flush($result);
+
+        return $user;
     }
 }
