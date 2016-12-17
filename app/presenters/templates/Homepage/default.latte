@@ -8,19 +8,19 @@
 			<tbody>
 			<tr class="box box-effects" data-difficulty="1">
 				<td class="box-content-name">Lehká</td>
-				<td class="box-content">Lehká obtížnost znalostního testu. Obrázkový kvíz s výběrem z více možností a textovou nápovědou.</td>
+				<td class="box-content">Obrázkový kvíz poznávání ptactva s výběrem z více možností a textovou nápovědou.</td>
 				<td class="box-content-label green" />
 			</tr>
 			<tr><th></th></tr>
 			<tr class="box box-effects" data-difficulty="2">
 				<td class="box-content-name">Střední</td>
-				<td class="box-content">Střední obtížnost znalostního testu. Poznávání správného druhu z fotografií ptactva s textovou nápovědou..</td>
+				<td class="box-content">Obrázkový kvíz poznávání ptactva s výběrem z více možností bez nápovědy.</td>
 				<td class="box-content-label gold" />
 			</tr>
 			<tr><th></th></tr>
 			<tr class="box box-effects" data-difficulty="3">
 				<td class="box-content-name">Těžká</td>
-				<td class="box-content">Obrázkový kvíz s výběrem z více možností a textovou nápovědou. Střední obtížnost znalostního testu.</td>
+				<td class="box-content">Obrázkový kvíz poznávání ptactva s textovou odpovědí bez nápovědy.</td>
 				<td class="box-content-label red" />
 			</tr>
 			</tbody>
@@ -29,12 +29,15 @@
 </div>
 
 <div class="login-content">
+    <div class="login-box">
+        <div class="login-header"><h1>Poznávání ptactva ČR</h1></div>
 	<div class="login">
 		<div><h1>Přihlášení</h1></div>
 		<input type="text" placeholder="Jméno" id="name"/>
-		<input type="text" placeholder="E-mail" id="email" value="ondra.zemanek@gmail.com"/>
+		<input type="text" placeholder="E-mail" id="email"/>
 		<input type="submit" value="Přihlásit" id="submitLogin"/>
 	</div>
+    </div>
 </div>
 
 <div class="test-content" style="display: none;">
@@ -47,7 +50,7 @@
         <div class="status-control">
             <div class="progress-bar"><div class="progress"></div></div>
             <div class="progress-label"><span class="actual">1</span>/{$test->getQuestions()->count()}</div>
-            <div class="help">Nápověda</div>
+            <div class="help" style="display: none;">Nápověda</div>
         </div>
         {foreach $test->getQuestions() as $key => $question}
             <div class="box-control question qnum-{$key} answer-box" style="display: none;">
@@ -69,7 +72,7 @@
                     </tr>
                     <tr><th></th></tr>
                     <tr data-answer="fulltext" class="box box-effects answer fulltext">
-                        <td class="box-content"><input type="text" placeholder="Zde napište svoji odpověď..."/></td>
+                        <td class="box-content"><input type="text" placeholder="Zde napište celý název druhu..."/></td>
                         <td class="box-content-label fulltext-send"></td>
                     </tr>
                     <tr><th></th></tr>
@@ -86,7 +89,7 @@
             <div class="result-circle">
                 <div class="center-text"></div>
                 <p>Váš výsledek.</p>
-                <p class="correct" style="display: none;"></p>
+                <p class="correctAnswers" style="display: none;"></p>
                 <span class="slide-to-stats">Celkové výsledky</span>
             </div>
         </div>
@@ -133,9 +136,12 @@
         $('.difficulty-select .box-effects').on('click', function () {
             difficulty = $(this).data('difficulty');
 
+            if(difficulty == 1) {
+                $('.help').show();
+            }
+
             if (difficulty == 3) {
                 $('.box-effects.answer').not('.fulltext').hide();
-                $('.help').hide();
             } else {
                 $('.box-effects.answer.fulltext').hide();
             }
@@ -145,47 +151,61 @@
             $('.qnum-0').fadeIn(500);
         });
 
+        function checkAnswer(answer) {
+            if($.isNumeric(answer)) {
+                $ans = $('.qnum-' + actual + '.answer-box').find('.box')[answer - 1];
+                if ($($ans).hasClass('correct')) {
+                    $($ans).addClass('correctAnswer');
+                } else {
+                    $($ans).addClass('wrongAnswer');
+                }
+            }
+        }
+
         function nextQuestion(answer) {
-            questions[actual] = answer;
-            actual++;
+            $.when(checkAnswer(answer)).done(function () {
+                setTimeout(function() {
+                    questions[actual] = answer;
+                    actual++;
 
-            if (actual < total) {
-                $('.progress').css('width', (100 / total) * actual + '%');
-                $('.progress-label .actual').text(actual + 1);
-            }
-
-            if (actual == total) {
-                $('.progress').css('width', '100%');
-                $('.test-content').fadeOut(500);
-                $('#result-container').fadeIn(500);
-                $('#stats-container').fadeIn(500);
-                animateWaitingForResult();
-                console.log(questions);
-                $.nette.ajax({
-                    url: {link submit!},
-                    data: {
-                        email: email,
-                        difficulty: difficulty,
-                        test: JSON.stringify(questions)
+                    if (actual < total) {
+                        $('.progress').css('width', (100 / total) * actual + '%');
+                        $('.progress-label .actual').text(actual + 1);
                     }
-                }).done(function(payload) {
-                    $resultContainer = $('#result-container');
-                    $resultContainer.find('.correct').text(payload.correct);
-                    $resultContainer.find('.result-circle').attr('data-percent', payload.percent /*+ '%'*/);
-                    drawChart(payload.myLast, 'my_lasts_div', 'Moje poslední výsledky', '#f48c42');
-                    drawChart(payload.last, 'chart_div', 'Poslední výsledky ostatních', '#4b42f4');
-                });
+
+                    if (actual == total) {
+                        $('.progress').css('width', '100%');
+                        $('.test-content').fadeOut(500);
+                        $('#result-container').fadeIn(500);
+                        $('#stats-container').fadeIn(500);
+                        animateWaitingForResult();
+                        console.log(questions);
+                        $.nette.ajax({
+                            url: {link submit!},
+                            data: {
+                                email: email,
+                                difficulty: difficulty,
+                                test: JSON.stringify(questions)
+                            }
+                        }).done(function(payload) {
+                            $resultContainer = $('#result-container');
+                            $resultContainer.find('.correctAnswers').text(payload.correct);
+                            $resultContainer.find('.result-circle').attr('data-percent', payload.percent);
+                            drawChart(payload.myLast, 'my_lasts_div', 'Moje poslední výsledky', '#f48c42');
+                            drawChart(payload.last, 'chart_div', 'Poslední výsledky ostatních', '#4b42f4');
+                        });
 
 
-                return;
-            }
+                        return;
+                    }
 
-            $('.qnum-' + actual + '.answer-box').show();
-            $('.qnum-' + (actual - 1) + '.answer-box').hide();
-            $('.qnum-' + actual + '.question-img').fadeIn(1000);
+                    $('.qnum-' + actual + '.answer-box').show();
+                    $('.qnum-' + (actual - 1) + '.answer-box').hide();
+                    $('.qnum-' + actual + '.question-img').fadeIn(1000);
 
-            console.log(questions);
-
+                    console.log(questions);
+                }, 500);
+            });
         }
 
         $('.answer').not(".fulltext").on('click', function() {
@@ -282,17 +302,22 @@
             data.addColumn('string', 'Datum');
             data.addColumn('number', 'Výsledky');
 
-
             $.each(lasts, function( index, value ) {
                 data.addRow([index, value]);
             });
 
             // Set chart options
-            var options = {'title': text,
-                'width':800,
-                'height':600,
-                'colors': [color],
-                'backgroundColor': '#DDDDDD'
+            var options = {
+                title: text,
+                width:800,
+                height:600,
+                colors: [color],
+                backgroundColor: '#DDDDDD',
+                vAxis: {
+                    format:'# %',
+                    minValue: 1,
+                    maxValue: 1
+                }
             };
 
             // Instantiate and draw our chart, passing in some options.

@@ -62,14 +62,14 @@ class HomepagePresenter extends Nette\Application\UI\Presenter
         $lastValues = [];
 
         foreach ($last as $l) {
-            $lastValues[$l->getDate()->format('d.m. Y H:i')] = $l->getResult();
+            $lastValues[$l->getDate()->format('d.m. Y H:i')] = $l->getResult() / 100;
         }
 
         $myLast = $this->resultRepository->getMyLastResults($difficulty, $user->getId());
         $myLastValues = [];
 
         foreach ($myLast as $l) {
-            $myLastValues[$l->getDate()->format('d.m. Y H:i')] = $l->getResult();
+            $myLastValues[$l->getDate()->format('d.m. Y H:i')] = $l->getResult() / 100;
         }
 
         $this->sendJson([
