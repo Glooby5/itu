@@ -265,7 +265,7 @@
                     size: 300,
                     fill: { color: '#4A4A4A' },
                 }).one('circle-animation-end', function (event) {
-                    if($(this).find('.correct').text() == '') {
+                    if($(this).find('.correctAnswers').text() == '') {
                         animateWaitingForResult();
                     } else {
                         animateStatistics();
