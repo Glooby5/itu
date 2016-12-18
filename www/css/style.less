@@ -10,7 +10,7 @@
 @green: #8BC34A;
 @gold: #FFC107;
 @red: #F44336;
-@progress-bar-color: @red;
+@progress-bar-color: @gold;
 @shadow-color: rgba(0,0,0,.1);
 
 @font-light: "Segoe UI light";
@@ -152,6 +152,20 @@ h1 {
   }
 }
 
+.correctAnswer {
+  background: lighten(@gold, 10%);
+  &:hover *:not(.box-content-label){
+    background: @gold;
+  }
+}
+
+.wrongAnswer {
+  background: lighten(@red, 10%);
+  &:hover *:not(.box-content-label){
+    background: @red;
+  }
+}
+
 .box-content-label {
   background: @green;
   width:120px;
@@ -235,14 +249,14 @@ h1 {
   width: 200px;
   right: 0;
   top:0;
+  background: @gold;
 
   &:hover {
-    background: @green;
-    color: white;
+    background: lighten(@gold, 10%);
   }
 
   &:active {
-    background: lighten(@green, 20%);
+    background: lighten(@gold, 25%);
   }
 }
 
@@ -258,13 +272,27 @@ h1 {
   background: rgba(20, 20, 11, 0.9);
 }
 
-.login {
+.login-box {
   position: absolute;
   margin: auto;
-  top:0;
+  top:-60px;
   left:0;
   bottom: 0;
   right: 0;
+  height: 400px;
+  width: 300px;
+  color: white;
+  text-align: center;
+}
+
+.login-header {
+  margin: auto;
+  color: white;
+  text-align: center;
+}
+
+.login {
+  color: @text-color;
   height: 350px;
   width: 300px;
   background: @control-light-color;
@@ -337,16 +365,16 @@ h1 {
 .slide-to-stats {
   box-sizing: border-box;
   padding: 10px 70px;
-  background: lighten(#FFC107, 15%);
+  background: lighten(@gold, 15%);
   @font-normal: "Segoe UI";
   @font-size-normal: 1em;
 
   &:hover {
-    background: #FFC107;
+    background: @gold;
   }
 
   &:active {
-    background: lighten(#FFC107, 15%);
+    background: lighten(@gold, 15%);
   }
 }
 
